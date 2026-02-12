@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Hortifruti</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #e0e0e0;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-value.positive {
+            color: #4caf50;
+        }
+
+        .stat-value.negative {
+            color: #f44336;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-input, .form-select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-warning {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 300px;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥬 Gestão Hortifruti</h1>
+            <p class="subtitle">Sistema completo de controle financeiro e estoque</p>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                <button class="tab" onclick="showTab('transactions')">💰 Lançamentos</button>
+                <button class="tab" onclick="showTab('inventory')">📦 Estoque</button>
+                <button class="tab" onclick="showTab('losses')">🗑️ Perdas</button>
+                <button class="tab" onclick="showTab('suppliers')">🚚 Fornecedores</button>
+                <button class="tab" onclick="showTab('reports')">📈 Relatórios</button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="content active">
+            <div id="alerts"></div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total em Compras</div>
+                    <div class="stat-value negative" id="totalExpenses">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total em Vendas</div>
+                    <div class="stat-value positive" id="totalRevenue">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Lucro/Prejuízo</div>
+                    <div class="stat-value" id="totalProfit">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Margem de Lucro</div>
+                    <div class="stat-value" id="profitMargin">0%</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Produtos em Estoque</div>
+                    <div class="stat-value" id="totalProducts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Valor do Estoque</div>
+                    <div class="stat-value" id="inventoryValue">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total em Perdas</div>
+                    <div class="stat-value negative" id="totalLosses">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">% Perdas s/ Compras</div>
+                    <div class="stat-value" id="lossPercentage">0%</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Fornecedores Ativos</div>
+                    <div class="stat-value" id="totalSuppliers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Produtos Baixo Estoque</div>
+                    <div class="stat-value" id="lowStockCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Perdas Este Mês</div>
+                    <div class="stat-value negative" id="monthlyLosses">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Lucro Real (c/ perdas)</div>
+                    <div class="stat-value" id="realProfit">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="card-title" style="margin-bottom: 20px;">📈 Vendas vs Compras (Últimos 7 dias)</div>
+                <canvas id="salesChart" class="chart-canvas"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="card-title" style="margin-bottom: 20px;">🥕 Vendas por Categoria</div>
+                <canvas id="categoryChart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- LANÇAMENTOS -->
+        <div id="transactions" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Novo Lançamento</h2>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select" id="transactionType">
+                            <option value="purchase">Compra</option>
+                            <option value="sale">Venda</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-input" id="transactionDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="transactionCategory">
+                            <option value="Verduras">Verduras</option>
+                            <option value="Legumes">Legumes</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Temperos">Temperos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Produto</label>
+                        <input type="text" class="form-input" id="transactionProduct" placeholder="Ex: Tomate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Quantidade (kg/unid)</label>
+                        <input type="number" step="0.01" class="form-input" id="transactionQuantity" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preço Unitário (R$)</label>
+                        <input type="number" step="0.01" class="form-input" id="transactionPrice" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total (R$)</label>
+                        <input type="number" step="0.01" class="form-input" id="transactionTotal" placeholder="0.00" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group" id="supplierGroup" style="margin-bottom: 20px;">
+                    <label class="form-label">Fornecedor</label>
+                    <select class="form-select" id="transactionSupplier">
+                        <option value="">Selecione um fornecedor</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">Observações</label>
+                    <input type="text" class="form-input" id="transactionNotes" placeholder="Notas adicionais...">
+                </div>
+
+                <button class="btn btn-primary" onclick="addTransaction()">➕ Adicionar Lançamento</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Histórico de Lançamentos</h2>
+                    <div class="filter-section">
+                        <select class="form-select" onchange="filterTransactions()" id="filterType">
+                            <option value="all">Todos</option>
+                            <option value="purchase">Compras</option>
+                            <option value="sale">Vendas</option>
+                        </select>
+                        <select class="form-select" onchange="filterTransactions()" id="filterCategory">
+                            <option value="all">Todas Categorias</option>
+                            <option value="Verduras">Verduras</option>
+                            <option value="Legumes">Legumes</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Temperos">Temperos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Categoria</th>
+                                <th>Produto</th>
+                                <th>Qtd</th>
+                                <th>Preço Unit.</th>
+                                <th>Total</th>
+                                <th>Fornecedor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESTOQUE -->
+        <div id="inventory" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Adicionar Produto ao Estoque</h2>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Nome do Produto</label>
+                        <input type="text" class="form-input" id="productName" placeholder="Ex: Alface">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="productCategory">
+                            <option value="Verduras">Verduras</option>
+                            <option value="Legumes">Legumes</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Temperos">Temperos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Quantidade Atual</label>
+                        <input type="number" step="0.01" class="form-input" id="productStock" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estoque Mínimo</label>
+                        <input type="number" step="0.01" class="form-input" id="productMinStock" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Preço de Compra (R$)</label>
+                        <input type="number" step="0.01" class="form-input" id="productCostPrice" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preço de Venda (R$)</label>
+                        <input type="number" step="0.01" class="form-input" id="productSalePrice" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unidade</label>
+                        <select class="form-select" id="productUnit">
+                            <option value="kg">Kg</option>
+                            <option value="unid">Unidade</option>
+                            <option value="maço">Maço</option>
+                            <option value="caixa">Caixa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="addProduct()">➕ Adicionar Produto</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Produtos em Estoque</h2>
+                    <select class="form-select" onchange="filterInventory()" id="filterInventoryCategory">
+                        <option value="all">Todas Categorias</option>
+                        <option value="Verduras">Verduras</option>
+                        <option value="Legumes">Legumes</option>
+                        <option value="Frutas">Frutas</option>
+                        <option value="Temperos">Temperos</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Estoque Atual</th>
+                                <th>Estoque Mín.</th>
+                                <th>Status</th>
+                                <th>Preço Compra</th>
+                                <th>Preço Venda</th>
+                                <th>Margem</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERDAS -->
+        <div id="losses" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Registrar Perda</h2>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-input" id="lossDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="lossCategory">
+                            <option value="Verduras">Verduras</option>
+                            <option value="Legumes">Legumes</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Temperos">Temperos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Produto</label>
+                        <input type="text" class="form-input" id="lossProduct" placeholder="Ex: Banana">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Quantidade Perdida</label>
+                        <input type="number" step="0.01" class="form-input" id="lossQuantity" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unidade</label>
+                        <select class="form-select" id="lossUnit">
+                            <option value="kg">Kg</option>
+                            <option value="unid">Unidade</option>
+                            <option value="maço">Maço</option>
+                            <option value="penca">Penca</option>
+                            <option value="caixa">Caixa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Custo Unitário (R$)</label>
+                        <input type="number" step="0.01" class="form-input" id="lossCost" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor Total da Perda</label>
+                        <input type="number" step="0.01" class="form-input" id="lossTotal" placeholder="0.00" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">Motivo da Perda</label>
+                    <select class="form-select" id="lossReason">
+                        <option value="Apodrecimento">Apodrecimento/Estragou</option>
+                        <option value="Vencimento">Vencimento</option>
+                        <option value="Danificação">Danificação no transporte</option>
+                        <option value="Má qualidade">Má qualidade do fornecedor</option>
+                        <option value="Praga">Praga/Insetos</option>
+                        <option value="Erro estoque">Erro de estoque</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">Observações</label>
+                    <input type="text" class="form-input" id="lossNotes" placeholder="Detalhes adicionais...">
+                </div>
+
+                <button class="btn btn-danger" onclick="addLoss()">🗑️ Registrar Perda</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Resumo de Perdas</h2>
+                    <div class="filter-section">
+                        <select class="form-select" onchange="filterLosses()" id="filterLossCategory">
+                            <option value="all">Todas Categorias</option>
+                            <option value="Verduras">Verduras</option>
+                            <option value="Legumes">Legumes</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Temperos">Temperos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                        <select class="form-select" onchange="filterLosses()" id="filterLossReason">
+                            <option value="all">Todos Motivos</option>
+                            <option value="Apodrecimento">Apodrecimento</option>
+                            <option value="Vencimento">Vencimento</option>
+                            <option value="Danificação">Danificação</option>
+                            <option value="Má qualidade">Má qualidade</option>
+                            <option value="Praga">Praga/Insetos</option>
+                            <option value="Erro estoque">Erro de estoque</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats-grid" style="margin-bottom: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Total em Perdas</div>
+                        <div class="stat-value negative" id="lossStatTotal">R$ 0,00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Perdas Este Mês</div>
+                        <div class="stat-value negative" id="lossStatMonth">R$ 0,00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Principal Motivo</div>
+                        <div class="stat-value" style="font-size: 18px;" id="lossStatReason">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Categoria Mais Perdas</div>
+                        <div class="stat-value" style="font-size: 18px;" id="lossStatCategory">-</div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Categoria</th>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                                <th>Motivo</th>
+                                <th>Observações</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lossesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="card-title" style="margin-bottom: 20px;">📊 Perdas por Motivo</div>
+                <canvas id="lossReasonChart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- FORNECEDORES -->
+        <div id="suppliers" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Cadastrar Fornecedor</h2>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Nome/Razão Social</label>
+                        <input type="text" class="form-input" id="supplierName" placeholder="Ex: Hortifruti Silva">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone</label>
+                        <input type="tel" class="form-input" id="supplierPhone" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" class="form-input" id="supplierEmail" placeholder="contato@fornecedor.com">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">Endereço</label>
+                    <input type="text" class="form-input" id="supplierAddress" placeholder="Rua, número, bairro, cidade">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">Produtos Fornecidos</label>
+                    <input type="text" class="form-input" id="supplierProducts" placeholder="Ex: Verduras, Legumes, Frutas">
+                </div>
+
+                <button class="btn btn-primary" onclick="addSupplier()">➕ Adicionar Fornecedor</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Lista de Fornecedores</h2>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>E-mail</th>
+                                <th>Produtos</th>
+                                <th>Total Comprado</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suppliersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- RELATÓRIOS -->
+        <div id="reports" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Filtros de Relatório</h2>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Data Início</label>
+                        <input type="date" class="form-input" id="reportStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data Fim</label>
+                        <input type="date" class="form-input" id="reportEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" id="reportCategory">
+                            <option value="all">Todas</option>
+                            <option value="Verduras">Verduras</option>
+                            <option value="Legumes">Legumes</option>
+                            <option value="Frutas">Frutas</option>
+                            <option value="Temperos">Temperos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateReport()">📊 Gerar Relatório</button>
+            </div>
+
+            <div id="reportResults"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+        let suppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
+        let losses = JSON.parse(localStorage.getItem('losses')) || [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('transactionDate').valueAsDate = new Date();
+            document.getElementById('lossDate').valueAsDate = new Date();
+            document.getElementById('reportStartDate').valueAsDate = new Date(new Date().setDate(new Date().getDate() - 30));
+            document.getElementById('reportEndDate').valueAsDate = new Date();
+            
+            updateDashboard();
+            renderTransactions();
+            renderInventory();
+            renderSuppliers();
+            renderLosses();
+            updateSupplierDropdown();
+            
+            // Auto-calculate total
+            document.getElementById('transactionQuantity').addEventListener('input', calculateTotal);
+            document.getElementById('transactionPrice').addEventListener('input', calculateTotal);
+            
+            // Auto-calculate loss total
+            document.getElementById('lossQuantity').addEventListener('input', calculateLossTotal);
+            document.getElementById('lossCost').addEventListener('input', calculateLossTotal);
+            
+            // Show/hide supplier field
+            document.getElementById('transactionType').addEventListener('change', function() {
+                document.getElementById('supplierGroup').style.display = 
+                    this.value === 'purchase' ? 'block' : 'none';
+            });
+        });
+
+        function showTab(tabName) {
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            }
+        }
+
+        function calculateTotal() {
+            const qty = parseFloat(document.getElementById('transactionQuantity').value) || 0;
+            const price = parseFloat(document.getElementById('transactionPrice').value) || 0;
+            document.getElementById('transactionTotal').value = (qty * price).toFixed(2);
+        }
+
+        function addTransaction() {
+            const type = document.getElementById('transactionType').value;
+            const date = document.getElementById('transactionDate').value;
+            const category = document.getElementById('transactionCategory').value;
+            const product = document.getElementById('transactionProduct').value;
+            const quantity = parseFloat(document.getElementById('transactionQuantity').value);
+            const price = parseFloat(document.getElementById('transactionPrice').value);
+            const total = parseFloat(document.getElementById('transactionTotal').value);
+            const supplier = document.getElementById('transactionSupplier').value;
+            const notes = document.getElementById('transactionNotes').value;
+
+            if (!date || !product || !quantity || !price) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            const transaction = {
+                id: Date.now(),
+                type,
+                date,
+                category,
+                product,
+                quantity,
+                price,
+                total,
+                supplier,
+                notes
+            };
+
+            transactions.push(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            // Update inventory
+            updateInventoryFromTransaction(transaction);
+
+            // Clear form
+            document.getElementById('transactionProduct').value = '';
+            document.getElementById('transactionQuantity').value = '';
+            document.getElementById('transactionPrice').value = '';
+            document.getElementById('transactionTotal').value = '';
+            document.getElementById('transactionNotes').value = '';
+
+            renderTransactions();
+            updateDashboard();
+            alert('Lançamento adicionado com sucesso!');
+        }
+
+        function updateInventoryFromTransaction(transaction) {
+            const existingProduct = inventory.find(p => 
+                p.name.toLowerCase() === transaction.product.toLowerCase()
+            );
+
+            if (existingProduct) {
+                if (transaction.type === 'purchase') {
+                    existingProduct.stock += transaction.quantity;
+                    existingProduct.costPrice = transaction.price;
+                } else {
+                    existingProduct.stock -= transaction.quantity;
+                }
+            } else if (transaction.type === 'purchase') {
+                inventory.push({
+                    id: Date.now(),
+                    name: transaction.product,
+                    category: transaction.category,
+                    stock: transaction.quantity,
+                    minStock: 0,
+                    costPrice: transaction.price,
+                    salePrice: transaction.price * 1.5,
+                    unit: 'kg'
+                });
+            }
+
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+            renderInventory();
+        }
+
+        function deleteTransaction(id) {
+            if (confirm('Deseja realmente excluir este lançamento?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                renderTransactions();
+                updateDashboard();
+            }
+        }
+
+        function calculateLossTotal() {
+            const qty = parseFloat(document.getElementById('lossQuantity').value) || 0;
+            const cost = parseFloat(document.getElementById('lossCost').value) || 0;
+            document.getElementById('lossTotal').value = (qty * cost).toFixed(2);
+        }
+
+        function addLoss() {
+            const date = document.getElementById('lossDate').value;
+            const category = document.getElementById('lossCategory').value;
+            const product = document.getElementById('lossProduct').value;
+            const quantity = parseFloat(document.getElementById('lossQuantity').value);
+            const unit = document.getElementById('lossUnit').value;
+            const cost = parseFloat(document.getElementById('lossCost').value);
+            const total = parseFloat(document.getElementById('lossTotal').value);
+            const reason = document.getElementById('lossReason').value;
+            const notes = document.getElementById('lossNotes').value;
+
+            if (!date || !product || !quantity || !cost) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            const loss = {
+                id: Date.now(),
+                date,
+                category,
+                product,
+                quantity,
+                unit,
+                cost,
+                total,
+                reason,
+                notes
+            };
+
+            losses.push(loss);
+            localStorage.setItem('losses', JSON.stringify(losses));
+
+            // Update inventory - reduce stock
+            const existingProduct = inventory.find(p => 
+                p.name.toLowerCase() === product.toLowerCase()
+            );
+            if (existingProduct) {
+                existingProduct.stock -= quantity;
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                renderInventory();
+            }
+
+            // Clear form
+            document.getElementById('lossProduct').value = '';
+            document.getElementById('lossQuantity').value = '';
+            document.getElementById('lossCost').value = '';
+            document.getElementById('lossTotal').value = '';
+            document.getElementById('lossNotes').value = '';
+
+            renderLosses();
+            updateDashboard();
+            alert('Perda registrada com sucesso!');
+        }
+
+        function deleteLoss(id) {
+            if (confirm('Deseja realmente excluir este registro de perda?')) {
+                losses = losses.filter(l => l.id !== id);
+                localStorage.setItem('losses', JSON.stringify(losses));
+                renderLosses();
+                updateDashboard();
+            }
+        }
+
+        function filterLosses() {
+            renderLosses();
+        }
+
+        function renderLosses() {
+            const filterCategory = document.getElementById('filterLossCategory').value;
+            const filterReason = document.getElementById('filterLossReason').value;
+            
+            let filtered = losses.filter(l => {
+                const catMatch = filterCategory === 'all' || l.category === filterCategory;
+                const reasonMatch = filterReason === 'all' || l.reason === filterReason;
+                return catMatch && reasonMatch;
+            });
+
+            const tbody = document.getElementById('lossesTable');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Nenhuma perda registrada</td></tr>';
+            } else {
+                tbody.innerHTML = filtered.sort((a, b) => new Date(b.date) - new Date(a.date)).map(l => `
+                    <tr>
+                        <td>${new Date(l.date).toLocaleDateString('pt-BR')}</td>
+                        <td><span class="category-tag" style="background: ${getCategoryColor(l.category)}">${l.category}</span></td>
+                        <td>${l.product}</td>
+                        <td>${l.quantity.toFixed(2)} ${l.unit}</td>
+                        <td><strong style="color: #f44336;">R$ ${l.total.toFixed(2)}</strong></td>
+                        <td><span class="badge badge-warning">${l.reason}</span></td>
+                        <td>${l.notes || '-'}</td>
+                        <td>
+                            <button class="action-btn btn-danger" onclick="deleteLoss(${l.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            updateLossStats();
+            updateLossChart();
+        }
+
+        function updateLossStats() {
+            const totalLosses = losses.reduce((sum, l) => sum + l.total, 0);
+            
+            const now = new Date();
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            const monthlyLosses = losses
+                .filter(l => l.date >= firstDayOfMonth)
+                .reduce((sum, l) => sum + l.total, 0);
+
+            document.getElementById('lossStatTotal').textContent = `R$ ${totalLosses.toFixed(2)}`;
+            document.getElementById('lossStatMonth').textContent = `R$ ${monthlyLosses.toFixed(2)}`;
+
+            // Get most common reason
+            const reasonCounts = {};
+            losses.forEach(l => {
+                reasonCounts[l.reason] = (reasonCounts[l.reason] || 0) + 1;
+            });
+            const topReason = Object.keys(reasonCounts).length > 0
+                ? Object.keys(reasonCounts).reduce((a, b) => reasonCounts[a] > reasonCounts[b] ? a : b)
+                : '-';
+            document.getElementById('lossStatReason').textContent = topReason;
+
+            // Get category with most losses
+            const categoryTotals = {};
+            losses.forEach(l => {
+                categoryTotals[l.category] = (categoryTotals[l.category] || 0) + l.total;
+            });
+            const topCategory = Object.keys(categoryTotals).length > 0
+                ? Object.keys(categoryTotals).reduce((a, b) => categoryTotals[a] > categoryTotals[b] ? a : b)
+                : '-';
+            document.getElementById('lossStatCategory').textContent = topCategory;
+        }
+
+        function updateLossChart() {
+            const canvas = document.getElementById('lossReasonChart');
+            const ctx = canvas.getContext('2d');
+            
+            const reasons = ['Apodrecimento', 'Vencimento', 'Danificação', 'Má qualidade', 'Praga', 'Erro estoque', 'Outros'];
+            const data = reasons.map(reason => 
+                losses
+                    .filter(l => l.reason === reason)
+                    .reduce((sum, l) => sum + l.total, 0)
+            );
+
+            const colors = ['#f44336', '#ff9800', '#ff5722', '#e91e63', '#9c27b0', '#3f51b5', '#607d8b'];
+
+            drawPieChart(ctx, canvas.width, canvas.height, reasons, data, colors);
+        }
+
+        function filterTransactions() {
+            renderTransactions();
+        }
+
+        function renderTransactions() {
+            const filterType = document.getElementById('filterType').value;
+            const filterCategory = document.getElementById('filterCategory').value;
+            
+            let filtered = transactions.filter(t => {
+                const typeMatch = filterType === 'all' || t.type === filterType;
+                const catMatch = filterCategory === 'all' || t.category === filterCategory;
+                return typeMatch && catMatch;
+            });
+
+            const tbody = document.getElementById('transactionsTable');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Nenhum lançamento encontrado</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.sort((a, b) => new Date(b.date) - new Date(a.date)).map(t => `
+                <tr>
+                    <td>${new Date(t.date).toLocaleDateString('pt-BR')}</td>
+                    <td><span class="badge ${t.type === 'sale' ? 'badge-success' : 'badge-danger'}">${t.type === 'sale' ? 'Venda' : 'Compra'}</span></td>
+                    <td><span class="category-tag" style="background: ${getCategoryColor(t.category)}">${t.category}</span></td>
+                    <td>${t.product}</td>
+                    <td>${t.quantity.toFixed(2)}</td>
+                    <td>R$ ${t.price.toFixed(2)}</td>
+                    <td><strong>R$ ${t.total.toFixed(2)}</strong></td>
+                    <td>${t.supplier || '-'}</td>
+                    <td>
+                        <button class="action-btn btn-danger" onclick="deleteTransaction(${t.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addProduct() {
+            const name = document.getElementById('productName').value;
+            const category = document.getElementById('productCategory').value;
+            const stock = parseFloat(document.getElementById('productStock').value) || 0;
+            const minStock = parseFloat(document.getElementById('productMinStock').value) || 0;
+            const costPrice = parseFloat(document.getElementById('productCostPrice').value) || 0;
+            const salePrice = parseFloat(document.getElementById('productSalePrice').value) || 0;
+            const unit = document.getElementById('productUnit').value;
+
+            if (!name) {
+                alert('Por favor, informe o nome do produto!');
+                return;
+            }
+
+            const product = {
+                id: Date.now(),
+                name,
+                category,
+                stock,
+                minStock,
+                costPrice,
+                salePrice,
+                unit
+            };
+
+            inventory.push(product);
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+
+            // Clear form
+            document.getElementById('productName').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productMinStock').value = '';
+            document.getElementById('productCostPrice').value = '';
+            document.getElementById('productSalePrice').value = '';
+
+            renderInventory();
+            updateDashboard();
+            alert('Produto adicionado com sucesso!');
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Deseja realmente excluir este produto?')) {
+                inventory = inventory.filter(p => p.id !== id);
+                localStorage.setItem('inventory', JSON.stringify(inventory));
+                renderInventory();
+                updateDashboard();
+            }
+        }
+
+        function filterInventory() {
+            renderInventory();
+        }
+
+        function renderInventory() {
+            const filterCategory = document.getElementById('filterInventoryCategory').value;
+            
+            let filtered = inventory.filter(p => 
+                filterCategory === 'all' || p.category === filterCategory
+            );
+
+            const tbody = document.getElementById('inventoryTable');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Nenhum produto cadastrado</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => {
+                const margin = p.costPrice > 0 ? ((p.salePrice - p.costPrice) / p.costPrice * 100).toFixed(1) : 0;
+                const isLowStock = p.stock <= p.minStock;
+                
+                return `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td><span class="category-tag" style="background: ${getCategoryColor(p.category)}">${p.category}</span></td>
+                        <td>${p.stock.toFixed(2)} ${p.unit}</td>
+                        <td>${p.minStock.toFixed(2)} ${p.unit}</td>
+                        <td>
+                            <span class="badge ${isLowStock ? 'badge-danger' : 'badge-success'}">
+                                ${isLowStock ? '⚠️ Baixo' : '✓ OK'}
+                            </span>
+                        </td>
+                        <td>R$ ${p.costPrice.toFixed(2)}</td>
+                        <td>R$ ${p.salePrice.toFixed(2)}</td>
+                        <td>${margin}%</td>
+                        <td>
+                            <button class="action-btn btn-danger" onclick="deleteProduct(${p.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function addSupplier() {
+            const name = document.getElementById('supplierName').value;
+            const phone = document.getElementById('supplierPhone').value;
+            const email = document.getElementById('supplierEmail').value;
+            const address = document.getElementById('supplierAddress').value;
+            const products = document.getElementById('supplierProducts').value;
+
+            if (!name) {
+                alert('Por favor, informe o nome do fornecedor!');
+                return;
+            }
+
+            const supplier = {
+                id: Date.now(),
+                name,
+                phone,
+                email,
+                address,
+                products
+            };
+
+            suppliers.push(supplier);
+            localStorage.setItem('suppliers', JSON.stringify(suppliers));
+
+            // Clear form
+            document.getElementById('supplierName').value = '';
+            document.getElementById('supplierPhone').value = '';
+            document.getElementById('supplierEmail').value = '';
+            document.getElementById('supplierAddress').value = '';
+            document.getElementById('supplierProducts').value = '';
+
+            renderSuppliers();
+            updateSupplierDropdown();
+            updateDashboard();
+            alert('Fornecedor cadastrado com sucesso!');
+        }
+
+        function deleteSupplier(id) {
+            if (confirm('Deseja realmente excluir este fornecedor?')) {
+                suppliers = suppliers.filter(s => s.id !== id);
+                localStorage.setItem('suppliers', JSON.stringify(suppliers));
+                renderSuppliers();
+                updateSupplierDropdown();
+                updateDashboard();
+            }
+        }
+
+        function renderSuppliers() {
+            const tbody = document.getElementById('suppliersTable');
+            
+            if (suppliers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhum fornecedor cadastrado</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = suppliers.map(s => {
+                const totalPurchased = transactions
+                    .filter(t => t.type === 'purchase' && t.supplier === s.name)
+                    .reduce((sum, t) => sum + t.total, 0);
+
+                return `
+                    <tr>
+                        <td><strong>${s.name}</strong></td>
+                        <td>${s.phone || '-'}</td>
+                        <td>${s.email || '-'}</td>
+                        <td>${s.products || '-'}</td>
+                        <td><strong>R$ ${totalPurchased.toFixed(2)}</strong></td>
+                        <td>
+                            <button class="action-btn btn-danger" onclick="deleteSupplier(${s.id})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateSupplierDropdown() {
+            const select = document.getElementById('transactionSupplier');
+            select.innerHTML = '<option value="">Selecione um fornecedor</option>' +
+                suppliers.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+        }
+
+        function updateDashboard() {
+            const totalExpenses = transactions
+                .filter(t => t.type === 'purchase')
+                .reduce((sum, t) => sum + t.total, 0);
+            
+            const totalRevenue = transactions
+                .filter(t => t.type === 'sale')
+                .reduce((sum, t) => sum + t.total, 0);
+            
+            const totalLossValue = losses.reduce((sum, l) => sum + l.total, 0);
+            
+            const profit = totalRevenue - totalExpenses;
+            const realProfit = profit - totalLossValue;
+            const margin = totalRevenue > 0 ? (profit / totalRevenue * 100).toFixed(1) : 0;
+            const lossPercentage = totalExpenses > 0 ? (totalLossValue / totalExpenses * 100).toFixed(1) : 0;
+
+            // Get monthly losses
+            const now = new Date();
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            const monthlyLossValue = losses
+                .filter(l => l.date >= firstDayOfMonth)
+                .reduce((sum, l) => sum + l.total, 0);
+
+            document.getElementById('totalExpenses').textContent = `R$ ${totalExpenses.toFixed(2)}`;
+            document.getElementById('totalRevenue').textContent = `R$ ${totalRevenue.toFixed(2)}`;
+            document.getElementById('totalProfit').textContent = `R$ ${profit.toFixed(2)}`;
+            document.getElementById('totalProfit').className = `stat-value ${profit >= 0 ? 'positive' : 'negative'}`;
+            document.getElementById('profitMargin').textContent = `${margin}%`;
+            
+            document.getElementById('totalLosses').textContent = `R$ ${totalLossValue.toFixed(2)}`;
+            document.getElementById('lossPercentage').textContent = `${lossPercentage}%`;
+            document.getElementById('monthlyLosses').textContent = `R$ ${monthlyLossValue.toFixed(2)}`;
+            document.getElementById('realProfit').textContent = `R$ ${realProfit.toFixed(2)}`;
+            document.getElementById('realProfit').className = `stat-value ${realProfit >= 0 ? 'positive' : 'negative'}`;
+
+            const inventoryValue = inventory.reduce((sum, p) => sum + (p.stock * p.costPrice), 0);
+            const lowStockCount = inventory.filter(p => p.stock <= p.minStock).length;
+
+            document.getElementById('totalProducts').textContent = inventory.length;
+            document.getElementById('inventoryValue').textContent = `R$ ${inventoryValue.toFixed(2)}`;
+            document.getElementById('totalSuppliers').textContent = suppliers.length;
+            document.getElementById('lowStockCount').textContent = lowStockCount;
+
+            // Update alerts
+            updateAlerts(lowStockCount);
+
+            // Update charts
+            updateCharts();
+        }
+
+        function updateAlerts(lowStockCount) {
+            const alertsDiv = document.getElementById('alerts');
+            let alerts = '';
+
+            if (lowStockCount > 0) {
+                alerts += `
+                    <div class="alert alert-warning">
+                        <span style="font-size: 24px;">⚠️</span>
+                        <div>
+                            <strong>Atenção!</strong> Você tem ${lowStockCount} produto(s) com estoque baixo.
+                        </div>
+                    </div>
+                `;
+            }
+
+            const negativeStock = inventory.filter(p => p.stock < 0).length;
+            if (negativeStock > 0) {
+                alerts += `
+                    <div class="alert alert-danger">
+                        <span style="font-size: 24px;">🚨</span>
+                        <div>
+                            <strong>Crítico!</strong> Você tem ${negativeStock} produto(s) com estoque negativo.
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Check high losses this month
+            const now = new Date();
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            const monthlyLossValue = losses
+                .filter(l => l.date >= firstDayOfMonth)
+                .reduce((sum, l) => sum + l.total, 0);
+            
+            const monthlyPurchases = transactions
+                .filter(t => t.type === 'purchase' && t.date >= firstDayOfMonth)
+                .reduce((sum, t) => sum + t.total, 0);
+            
+            const lossPercentage = monthlyPurchases > 0 ? (monthlyLossValue / monthlyPurchases * 100) : 0;
+            
+            if (lossPercentage > 10) {
+                alerts += `
+                    <div class="alert alert-warning">
+                        <span style="font-size: 24px;">📉</span>
+                        <div>
+                            <strong>Perdas Elevadas!</strong> ${lossPercentage.toFixed(1)}% das compras deste mês foram perdas (R$ ${monthlyLossValue.toFixed(2)}).
+                        </div>
+                    </div>
+                `;
+            }
+
+            alertsDiv.innerHTML = alerts;
+        }
+
+        function updateCharts() {
+            updateSalesChart();
+            updateCategoryChart();
+        }
+
+        function updateSalesChart() {
+            const canvas = document.getElementById('salesChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Get last 7 days
+            const days = [];
+            const salesData = [];
+            const purchaseData = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                days.push(date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
+                
+                const daySales = transactions
+                    .filter(t => t.type === 'sale' && t.date === dateStr)
+                    .reduce((sum, t) => sum + t.total, 0);
+                
+                const dayPurchases = transactions
+                    .filter(t => t.type === 'purchase' && t.date === dateStr)
+                    .reduce((sum, t) => sum + t.total, 0);
+                
+                salesData.push(daySales);
+                purchaseData.push(dayPurchases);
+            }
+
+            drawBarChart(ctx, canvas.width, canvas.height, days, 
+                [
+                    { label: 'Vendas', data: salesData, color: '#4caf50' },
+                    { label: 'Compras', data: purchaseData, color: '#f44336' }
+                ]
+            );
+        }
+
+        function updateCategoryChart() {
+            const canvas = document.getElementById('categoryChart');
+            const ctx = canvas.getContext('2d');
+            
+            const categories = ['Verduras', 'Legumes', 'Frutas', 'Temperos', 'Outros'];
+            const data = categories.map(cat => 
+                transactions
+                    .filter(t => t.type === 'sale' && t.category === cat)
+                    .reduce((sum, t) => sum + t.total, 0)
+            );
+
+            const colors = categories.map(cat => getCategoryColor(cat));
+
+            drawPieChart(ctx, canvas.width, canvas.height, categories, data, colors);
+        }
+
+        function drawBarChart(ctx, width, height, labels, datasets) {
+            ctx.clearRect(0, 0, width, height);
+            
+            const padding = 40;
+            const chartWidth = width - padding * 2;
+            const chartHeight = height - padding * 2;
+            
+            const maxValue = Math.max(...datasets.flatMap(d => d.data), 1);
+            const barWidth = chartWidth / (labels.length * datasets.length + labels.length);
+            
+            // Draw axes
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Draw bars
+            labels.forEach((label, i) => {
+                datasets.forEach((dataset, j) => {
+                    const value = dataset.data[i];
+                    const barHeight = (value / maxValue) * chartHeight;
+                    const x = padding + (i * (barWidth * datasets.length + barWidth)) + (j * barWidth);
+                    const y = height - padding - barHeight;
+                    
+                    ctx.fillStyle = dataset.color;
+                    ctx.fillRect(x, y, barWidth - 5, barHeight);
+                });
+                
+                // Draw labels
+                ctx.fillStyle = '#666';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(label, padding + (i * (barWidth * datasets.length + barWidth)) + (barWidth * datasets.length / 2), height - padding + 20);
+            });
+            
+            // Draw legend
+            let legendX = width - padding - 100;
+            datasets.forEach((dataset, i) => {
+                ctx.fillStyle = dataset.color;
+                ctx.fillRect(legendX, 10 + (i * 25), 15, 15);
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(dataset.label, legendX + 20, 22 + (i * 25));
+            });
+        }
+
+        function drawPieChart(ctx, width, height, labels, data, colors) {
+            ctx.clearRect(0, 0, width, height);
+            
+            const total = data.reduce((sum, val) => sum + val, 0);
+            if (total === 0) {
+                ctx.fillStyle = '#999';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Sem dados para exibir', width / 2, height / 2);
+                return;
+            }
+            
+            const centerX = width / 2 - 50;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) / 3;
+            
+            let currentAngle = -Math.PI / 2;
+            
+            data.forEach((value, i) => {
+                const sliceAngle = (value / total) * 2 * Math.PI;
+                
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fill();
+                
+                currentAngle += sliceAngle;
+            });
+            
+            // Draw legend
+            let legendY = 30;
+            labels.forEach((label, i) => {
+                if (data[i] > 0) {
+                    const percentage = ((data[i] / total) * 100).toFixed(1);
+                    
+                    ctx.fillStyle = colors[i];
+                    ctx.fillRect(width - 150, legendY, 15, 15);
+                    
+                    ctx.fillStyle = '#333';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(`${label} (${percentage}%)`, width - 130, legendY + 12);
+                    
+                    legendY += 25;
+                }
+            });
+        }
+
+        function getCategoryColor(category) {
+            const colors = {
+                'Verduras': '#4caf50',
+                'Legumes': '#ff9800',
+                'Frutas': '#e91e63',
+                'Temperos': '#9c27b0',
+                'Outros': '#607d8b'
+            };
+            return colors[category] || '#999';
+        }
+
+        function generateReport() {
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            const category = document.getElementById('reportCategory').value;
+
+            const filtered = transactions.filter(t => {
+                const dateMatch = t.date >= startDate && t.date <= endDate;
+                const catMatch = category === 'all' || t.category === category;
+                return dateMatch && catMatch;
+            });
+
+            const filteredLosses = losses.filter(l => {
+                const dateMatch = l.date >= startDate && l.date <= endDate;
+                const catMatch = category === 'all' || l.category === category;
+                return dateMatch && catMatch;
+            });
+
+            const totalPurchases = filtered.filter(t => t.type === 'purchase').reduce((sum, t) => sum + t.total, 0);
+            const totalSales = filtered.filter(t => t.type === 'sale').reduce((sum, t) => sum + t.total, 0);
+            const totalLosses = filteredLosses.reduce((sum, l) => sum + l.total, 0);
+            const profit = totalSales - totalPurchases;
+            const realProfit = profit - totalLosses;
+            const margin = totalSales > 0 ? (profit / totalSales * 100).toFixed(1) : 0;
+            const lossPercentage = totalPurchases > 0 ? (totalLosses / totalPurchases * 100).toFixed(1) : 0;
+
+            const reportDiv = document.getElementById('reportResults');
+            reportDiv.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Relatório: ${new Date(startDate).toLocaleDateString('pt-BR')} a ${new Date(endDate).toLocaleDateString('pt-BR')}</h2>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Compras</div>
+                            <div class="stat-value negative">R$ ${totalPurchases.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Vendas</div>
+                            <div class="stat-value positive">R$ ${totalSales.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Perdas</div>
+                            <div class="stat-value negative">R$ ${totalLosses.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">% Perdas</div>
+                            <div class="stat-value">${lossPercentage}%</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Lucro (sem perdas)</div>
+                            <div class="stat-value ${profit >= 0 ? 'positive' : 'negative'}">R$ ${profit.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Lucro Real (c/ perdas)</div>
+                            <div class="stat-value ${realProfit >= 0 ? 'positive' : 'negative'}">R$ ${realProfit.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Margem</div>
+                            <div class="stat-value">${margin}%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Impacto das Perdas</div>
+                            <div class="stat-value negative">- R$ ${totalLosses.toFixed(2)}</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 20px 0;">Detalhamento por Categoria</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Compras</th>
+                                    <th>Vendas</th>
+                                    <th>Perdas</th>
+                                    <th>Lucro</th>
+                                    <th>Lucro Real</th>
+                                    <th>% Perdas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${['Verduras', 'Legumes', 'Frutas', 'Temperos', 'Outros'].map(cat => {
+                                    const catPurchases = filtered.filter(t => t.type === 'purchase' && t.category === cat).reduce((sum, t) => sum + t.total, 0);
+                                    const catSales = filtered.filter(t => t.type === 'sale' && t.category === cat).reduce((sum, t) => sum + t.total, 0);
+                                    const catLosses = filteredLosses.filter(l => l.category === cat).reduce((sum, l) => sum + l.total, 0);
+                                    const catProfit = catSales - catPurchases;
+                                    const catRealProfit = catProfit - catLosses;
+                                    const catLossPercent = catPurchases > 0 ? (catLosses / catPurchases * 100).toFixed(1) : 0;
+                                    
+                                    return `
+                                        <tr>
+                                            <td><span class="category-tag" style="background: ${getCategoryColor(cat)}">${cat}</span></td>
+                                            <td>R$ ${catPurchases.toFixed(2)}</td>
+                                            <td>R$ ${catSales.toFixed(2)}</td>
+                                            <td style="color: #f44336;"><strong>R$ ${catLosses.toFixed(2)}</strong></td>
+                                            <td class="${catProfit >= 0 ? 'positive' : 'negative'}">R$ ${catProfit.toFixed(2)}</td>
+                                            <td class="${catRealProfit >= 0 ? 'positive' : 'negative'}"><strong>R$ ${catRealProfit.toFixed(2)}</strong></td>
+                                            <td>${catLossPercent}%</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="margin: 20px 0;">Análise de Perdas por Motivo</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Motivo</th>
+                                    <th>Quantidade de Ocorrências</th>
+                                    <th>Valor Total</th>
+                                    <th>% do Total de Perdas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${['Apodrecimento', 'Vencimento', 'Danificação', 'Má qualidade', 'Praga', 'Erro estoque', 'Outros'].map(reason => {
+                                    const reasonLosses = filteredLosses.filter(l => l.reason === reason);
+                                    const reasonTotal = reasonLosses.reduce((sum, l) => sum + l.total, 0);
+                                    const reasonPercent = totalLosses > 0 ? (reasonTotal / totalLosses * 100).toFixed(1) : 0;
+                                    
+                                    if (reasonLosses.length === 0) return '';
+                                    
+                                    return `
+                                        <tr>
+                                            <td><span class="badge badge-warning">${reason}</span></td>
+                                            <td>${reasonLosses.length}</td>
+                                            <td style="color: #f44336;"><strong>R$ ${reasonTotal.toFixed(2)}</strong></td>
+                                            <td>${reasonPercent}%</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="margin: 20px 0;">Top 10 Produtos Mais Vendidos</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Receita</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${getTopProducts(filtered).map((p, i) => `
+                                    <tr>
+                                        <td><strong>${i + 1}º</strong></td>
+                                        <td>${p.product}</td>
+                                        <td>${p.quantity.toFixed(2)}</td>
+                                        <td><strong>R$ ${p.revenue.toFixed(2)}</strong></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="margin: 20px 0;">Top 10 Produtos com Mais Perdas</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Produto</th>
+                                    <th>Quantidade Perdida</th>
+                                    <th>Valor Perdido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${getTopLosses(filteredLosses).map((p, i) => `
+                                    <tr>
+                                        <td><strong>${i + 1}º</strong></td>
+                                        <td>${p.product}</td>
+                                        <td>${p.quantity.toFixed(2)}</td>
+                                        <td style="color: #f44336;"><strong>R$ ${p.total.toFixed(2)}</strong></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTopLosses(losses) {
+            const products = {};
+            
+            losses.forEach(l => {
+                if (!products[l.product]) {
+                    products[l.product] = { product: l.product, quantity: 0, total: 0 };
+                }
+                products[l.product].quantity += l.quantity;
+                products[l.product].total += l.total;
+            });
+
+            return Object.values(products)
+                .sort((a, b) => b.total - a.total)
+                .slice(0, 10);
+        }
+
+        function getTopProducts(transactions) {
+            const products = {};
+            
+            transactions.filter(t => t.type === 'sale').forEach(t => {
+                if (!products[t.product]) {
+                    products[t.product] = { product: t.product, quantity: 0, revenue: 0 };
+                }
+                products[t.product].quantity += t.quantity;
+                products[t.product].revenue += t.total;
+            });
+
+            return Object.values(products)
+                .sort((a, b) => b.revenue - a.revenue)
+                .slice(0, 10);
+        }
+    </script>
+</body>
+</html>
